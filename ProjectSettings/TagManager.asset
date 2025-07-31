@@ -5,11 +5,13 @@ TagManager:
   serializedVersion: 3
   tags:
   - Movable
+  - Bloop
+  - TopScan
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Bloop
   - Water
   - UI
   - Eye
