@@ -50,7 +50,7 @@ public class Draggable : MonoBehaviour
 
     void OnMouseUp()
     {
-        bloopy.PlayBloop();
+        bloopy.StopBloop();
         isDragging = false;
         rb.gravityScale = 1;
         rb.linearVelocity = Vector2.zero;

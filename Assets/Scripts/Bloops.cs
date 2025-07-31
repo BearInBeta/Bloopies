@@ -28,6 +28,11 @@ public class Bloops : MonoBehaviour
 
     public Bloop GetBloop(string name)
     {
+        if(cache == null)
+        {
+            CacheBloops();
+        }
+
         return cache[name];
     }
 }
