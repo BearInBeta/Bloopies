@@ -18,8 +18,16 @@ public class Scanner : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bloop"))
         {
-            collision.gameObject.GetComponent<Bloopy>().PlayBloop();
+            collision.gameObject.GetComponent<Bloopy>().ScanBloop();
         }else if (collision.gameObject.CompareTag("TopScan"))
+        {
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().reachedTop = true;
+        }
+        else if (collision.gameObject.CompareTag("DestroyScan"))
+        {
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().reachedDestroy = true;
+        }
+        else if (collision.gameObject.CompareTag("BottomScan") && GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().scanSpeed < 0)
         {
             GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().reachedTop = true;
         }

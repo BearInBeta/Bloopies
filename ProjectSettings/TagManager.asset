@@ -7,6 +7,8 @@ TagManager:
   - Movable
   - Bloop
   - TopScan
+  - DestroyScan
+  - BottomScan
   layers:
   - Default
   - TransparentFX

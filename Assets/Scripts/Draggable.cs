@@ -13,11 +13,15 @@ public class Draggable : MonoBehaviour
     public LayerMask draggableLayers; // Assign only the draggable layer(s)
 
     private static Draggable activeDraggable; // The one currently being dragged
+    public Bloopy toBeBuffed; 
 
     private Rigidbody2D rb;
     private Camera cam;
     private bool isDragging = false;
     private Vector3 offset;
+
+    [SerializeField] BoxCollider2D m_collider2D;
+    [SerializeField] GameObject rightEye, leftEye, rightLid, leftLid;
 
     void Awake()
     {
@@ -43,6 +47,28 @@ public class Draggable : MonoBehaviour
             }
         }
 
+        if(isDragging && GetComponent<Bloopy>()?.bloopType == BloopType.Buff)
+        {
+            Vector2 mouseWorld = GetMouseWorldPos();
+
+            RaycastHit2D hit = Physics2D.Raycast(mouseWorld, Vector2.zero, 0f, draggableLayers);
+            if (hit.collider != null && hit.collider.attachedRigidbody != null)
+            {
+                Bloopy found = hit.collider.GetComponent<Bloopy>();
+                
+                toBeBuffed = found;
+
+            }
+            else
+            {
+                toBeBuffed = null;
+            }
+        }else
+        {
+            toBeBuffed = null;
+        }
+
+
         if (Input.GetMouseButtonUp(0) && activeDraggable != null)
         {
             activeDraggable.StopDrag();
@@ -63,18 +89,48 @@ public class Draggable : MonoBehaviour
 
         rb.gravityScale = 0f;
         rb.linearVelocity = Vector2.zero;
+        if(GetComponent<Bloopy>()?.bloopType == BloopType.Buff)
+        {
+            rightEye.GetComponent<CircleCollider2D>().enabled = false;
+            leftEye.GetComponent<CircleCollider2D>().enabled = false;
+            leftLid.GetComponent<EdgeCollider2D>().enabled = false;
+            rightLid.GetComponent<EdgeCollider2D>().enabled = false;
+
+            rightEye.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            leftEye.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            GetComponent<BoxCollider2D>().enabled = false;
+            m_collider2D.enabled = false;
+        }
         Vector3 mouseWorld = GetMouseWorldPos();
         offset = transform.position - mouseWorld;
     }
 
     public void StopDrag()
     {
+        if(GetComponent<Bloopy>()?.bloopType == BloopType.Buff && toBeBuffed != null)
+        {
+            GetComponent<Bloopy>()?.ApplyBuff(toBeBuffed);
+            toBeBuffed = null;
+        }
         isDragging = false;
         rb.gravityScale = gravityScale;
         rb.constraints = RigidbodyConstraints2D.None;
+        if (GetComponent<Bloopy>()?.bloopType == BloopType.Buff)
+        {
+            rightEye.GetComponent<CircleCollider2D>().enabled = true;
+            leftEye.GetComponent<CircleCollider2D>().enabled = true;
+            leftLid.GetComponent<EdgeCollider2D>().enabled = true;
+            rightLid.GetComponent<EdgeCollider2D>().enabled = true;
+
+            rightEye.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            leftEye.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            GetComponent<BoxCollider2D>().enabled = true;
+
+            m_collider2D.enabled = true;
+        }
 
     }
-
+   
     void FixedUpdate()
     {
         if (!isDragging) return;
